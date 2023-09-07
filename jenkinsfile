@@ -1,2 +1,44 @@
-#!/bin/bash
-mv /home/ubuntu/demofile.txt /home/ubuntu/test/
+pipeline {
+    agent any
+    stages {
+        stage('Deploy') {
+            steps {
+                script {
+                    def remoteServer = [
+                        name: 'Jenkins_server',
+                        host: '65.2.57.86',
+                        port: 22,
+                        credentialsId: '65.2.57.86' // Replace with your SSH credentials ID
+                    ]
+
+                    def sourceFilePath = 'C:\\ProgramData\\Jenkins\\.jenkins\\workspace\\ec2_ssh_pipeline\\jenkins_key_pair.pem'
+                    def remoteDirectory = '/home/ubuntu/' // Replace with the actual target directory on the remote server
+
+                    sshPublisher(
+                        publishers: [
+                            sshPublisherDesc(
+                                configName: remoteServer.name,
+                                transfers: [
+                                    sshTransfer(
+                                        sourceFiles: sourceFilePath,
+                                        remoteDirectory: remoteDirectory,
+                                        makeEmptyDirs: true, // Create remote directory if it doesn't exist
+                                        execCommand: """
+                                            mv "${remoteDirectory}demofile.txt" "${remoteDirectory}test/"
+                                            ls -l "${remoteDirectory}test/"
+                                            cat "${remoteDirectory}test/demofile.txt"
+                                        """
+                                    )
+                                ],
+                                usePromotionTimestamp: false,
+                                useWorkspaceInPromotion: false,
+                                verbose: false
+                            )
+                        ]
+                    )
+                }
+            }
+        }
+        // Add more stages if needed
+    }
+}
