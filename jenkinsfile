@@ -11,7 +11,7 @@ pipeline {
                         credentialsId: '65.2.57.86' // Replace with your SSH credentials ID
                     ]
 
-                    def sourceFilePath = 'C:\\ProgramData\\Jenkins\\.jenkins\\workspace\\ec2_ssh_pipeline\\jenkins_key_pair.pem'
+                    def sourceFilePath = 'C:\\ProgramData\\Jenkins\\.jenkins\\workspace\\c2_ssh_Multibranch_pipeline_main\\jenkins_key_pair.pem'
                     def remoteDirectory = '/home/ubuntu/' // Replace with the actual target directory on the remote server
 
                     sshPublisher(
